@@ -133,6 +133,11 @@ def replace_kafka_offsets(create_sql, progress_json):
     Replace kafka_offsets in create_sql with offsets from progress_json, add 1 to each
     """
     try:
+          # Check if progress_json is already a string (not JSON)
+        if isinstance(progress_json, str) and not progress_json.startswith('{'):
+            print(f"Progress is a string, skipping kafka_offsets replacement: {progress_json}")
+            return create_sql
+            
         progress = json.loads(progress_json)
         offsets = []
         for k in sorted(progress.keys(), key=lambda x: int(x)):
